@@ -16,7 +16,7 @@ COPY src ./src
 
 COPY --from=frontend-builder /app/frontend/build ./src/main/resources/static
 
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -Pskip-frontend
 
 
 FROM eclipse-temurin:17-jdk-alpine

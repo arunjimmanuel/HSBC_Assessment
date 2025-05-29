@@ -34,9 +34,7 @@ build/
 
 
 # Node (React)
-src/main/frontend/build/
-src/main/resources/static/
-src/main/frontend/node_modules/
-src/main/frontend/node/
-src/main/frontend/node_modules/
-src/main/frontend/node/
+city-counter/src/main/frontend/build/
+city-counter/src/main/frontend/node/
+city-counter/src/main/frontend/node_modules/
+city-counter/src/main/resources/static/

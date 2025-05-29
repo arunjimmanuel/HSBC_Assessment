@@ -6,6 +6,8 @@ It includes:
 - Backend: Java 17, Spring Boot 3.5
 - Frontend: React (Node.js 18) inside `src/main/frontend`
 - Build tool: Maven
+- Caching: Spring's `@Cacheable` annotation for improved performance
+- Scheduled Task: Auto-clears city count cache every 1 hour using `@Scheduled`
 - Containerization: Multi-stage Docker build
 
 ---
@@ -15,34 +17,40 @@ It includes:
 ```
 HSBC_ASSESSMENT/
 └── city-counter/
-    ├── src/
-    │   ├── main/
-    │   │   ├── java/
-    │   │   │   └── com/arun/immanuel/city_counter/
-    │   │   │       ├── config/WebConfig.java
-    │   │   │       ├── controller/CityCounterController.java
-    │   │   │       ├── service/CityCounterService.java
-    │   │   │       └── CityCounterApplication.java
-    │   │   ├── resources/
-    │   │   │   └── application.properties
-    │   │   └── frontend/
-    │   │       ├── package.json
-    │   │       ├── public/
-    │   │       └── src/
-    │   │           └── App.jsx
-    ├── pom.xml
-    ├── Dockerfile
-    ├── .dockerignore
-    README.md
+│   ├── src/
+│   │   ├── main/
+│   │       ├── java/
+│   │       │   └── com/arun/immanuel/city_counter/
+│   │       │       ├── config/WebConfig.java
+│   │       │       ├── controller/CityCounterController.java
+│   │       │       ├── handler/GlobalExceptionHandler.java
+│   │       │       ├── service/CityCounterService.java
+│   │       │       └── CityCounterApplication.java
+│   │       ├── resources/
+│   │       │   └── application.properties
+│   │       └── frontend/
+│   │           ├── package.json
+│   │           ├── public/
+│   │           └── src/
+│   │               └── App.jsx
+│   │               └── App.css
+│   │               └── package.json
+│   ├── pom.xml
+│   ├── Dockerfile
+│   ├── .dockerignore
+├── .gitignore
+├── README.md
 ```
 
 ---
 
 ## Features
 
--  Input a letter and fetch the number of cities starting with that letter
--  React frontend is served by Spring Boot backend
--  Fully Dockerized, production-ready setup
+- Input a letter and fetch the number of cities starting with that letter
+- React frontend is served by Spring Boot backend
+- Spring Boot caches the results of each letter-based search using `@Cacheable`
+- Cache entries are automatically cleared every hour using `@Scheduled`
+- Fully Dockerized, production-ready setup
 
 ---
 
@@ -75,6 +83,7 @@ http://localhost:8080
 #### 1. Build the Docker image
 
 ```bash
+cd city-counter
 docker build -t city-counter-app .
 ```
 
@@ -92,15 +101,24 @@ Then open:
 ## API Endpoint
 
 ```
-GET /api/count?letter=a
+GET /api/cities?letter=a
 ```
 
 Returns JSON:
 ```json
 {
-  "count": 3
+  "cities":"Zuwarah, Zawiya, Zlitan",
+  "count":3
 }
 ```
+---
+
+## Caching & Scheduler
+Caching: The backend caches results of city counts by starting letter using Spring's @Cacheable.
+
+Scheduler: A scheduled method runs every 1 hour using @Scheduled to clear the cache with @CacheEvict.
+
+Benefits: Improved response time and fewer external API calls.
 
 ---
 
@@ -123,4 +141,6 @@ This allows the React app (port 3000) to call Spring Boot backend (port 8080) wi
 | Backend    | Java 17, Spring Boot 3.5      |
 | Frontend   | React, Node.js 18             |
 | Build Tool | Maven                         |
+| Caching    | Spring Boot @Cacheable        |
+| Scheduler	 | Spring Boot @Scheduled        |
 | Docker     | Multi-stage image build       |
