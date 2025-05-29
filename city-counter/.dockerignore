@@ -1,0 +1,6 @@
+node_modules
+target
+src/main/frontend/node_modules
+src/main/frontend/node
+src/main/frontend/build
+*.log
